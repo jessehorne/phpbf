@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 function bf_run($in, $out) {
+	// Create an array holding the appropriate values for each BrainFuck token
 	$c = array(
 	">" => "++ptr;",
 	"<" => "--ptr;",
@@ -11,15 +12,20 @@ function bf_run($in, $out) {
 	"[" => "while (*ptr) {",
 	"]" => "}"
 	);
-	$code = file_get_contents($in);
-	$code = explode(" ", $code);
-	$code = str_split(implode($code));
 
-	$c_code = array();
+	$code = file_get_contents($in); 	// pour contents of $in into $code
+	$code = explode(" ", $code); 		// separate $code into array by spaces
+	$code = str_split(implode($code));	// set $code to the splitted-imploded $code array >:O what!?
+
+	$c_code = array();	// Create array to hold compiled C code
+	// add some header C code to the $c_code array
 	array_push($c_code, "char array[30000];");
 	array_push($c_code, "char *ptr=array;");
 	array_push($c_code, "int main() {");
 
+	// Basically, this loop goes through $code
+	// and inserts the appropriate C code, for 
+	// each BF token..its that simple
 	foreach ($code as $val) {
 		foreach ($c as $i => $v) {
 			if ($val == $i) {
@@ -27,10 +33,11 @@ function bf_run($in, $out) {
 			}
 		}
 	}
-	array_push($c_code, "}");
-	file_put_contents($out, implode(" ", $c_code));
+	array_push($c_code, "}"); // Add the final piece of the puzzle
+	file_put_contents($out, implode(" ", $c_code)); // put the C code into the destination!
 }
 
+// This handles the two command line arguments
 if (!$argv[1]) {
 	die("Error: Need Input File\n");
 } else {
