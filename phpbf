@@ -1,5 +1,51 @@
 #!/usr/bin/env php
 <?php
+
+function bf_run($in) {
+	// Create an array holding the appropriate values for each BrainFuck token
+	//$tokens = array(">","<","+","-",".",",","[","]");
+	$code = file_get_contents($in); 	// pour contents of $in into $code
+	$code = explode(" ", $code); 		// separate $code into array by spaces
+	$code = str_split(implode($code));	// set $code to the splitted-imploded $code array >:O what!?
+
+	$loops1 = array();
+	$loops2 = array();
+	$memory = array_fill(0, 30000, 0);
+	$ptr = 0;
+
+	$i = -1;
+	while ($i < sizeof($code)) {
+		$i++;
+		//echo "DEBUG: $i - $ptr\n";
+		$a = $code[$i];
+		if ($a == ">") {
+			$ptr++;
+		} elseif ($a == "<") {
+			$ptr--;
+		} elseif ($a == "+") {
+			$memory[$ptr]++;
+		} elseif ($a == "-") {
+			$memory[$ptr]--;
+		} elseif ($a == ".") {
+			echo chr($memory[$ptr]);
+		} elseif ($a == ",") {
+			$input = fgets(STDIN);
+			$memory[$ptr] = ord($input[0]);
+		} elseif ($a == "[") {
+			array_push($loops1, $i);
+		} elseif ($a == "]") {
+			if ($memory[$ptr] != 0) {
+				$i = $loops1[sizeof($loops1)-1];
+				continue;
+			} else {
+				unset($code[$i]);
+				unset($loops1[sizeof($loops1)-1]);
+			}
+		}
+	}
+	echo "\n";
+}
+
 function bf_compile($in, $out) {
 	// Create an array holding the appropriate values for each BrainFuck token
 	$c = array(
@@ -12,6 +58,7 @@ function bf_compile($in, $out) {
 	"[" => "while (*ptr) {",
 	"]" => "}"
 	);
+	// WARNING: Below, there is repeated code >:(
 	$code = file_get_contents($in); 	// pour contents of $in into $code
 	$code = explode(" ", $code); 		// separate $code into array by spaces
 	$code = str_split(implode($code));	// set $code to the splitted-imploded $code array >:O what!?
@@ -45,8 +92,8 @@ if (!$argv[1]) {
 		if ($argv[1] == "compile") {
 			if (!$argv[3]) { die("Error: Need Ouput File\n"); }
 			bf_compile($argv[2], $argv[3]);
-		} elseif ($argv[2] == "run") {
-			die("Error: 'run' not currently implemented.\n");
+		} elseif ($argv[1] == "run") {
+			bf_run($argv[2]);
 		}
 	}
 }
