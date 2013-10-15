@@ -1,0 +1,43 @@
+#!/usr/bin/env php
+<?php
+function bf_run($in, $out) {
+	$c = array(
+	">" => "++ptr;",
+	"<" => "--ptr;",
+	"+" => "++*ptr;",
+	"-" => "--*ptr;",
+	"." => "putchar(*ptr);",
+	"," => "*ptr=getchar();",
+	"[" => "while (*ptr) {",
+	"]" => "}"
+	);
+	$code = file_get_contents($in);
+	$code = explode(" ", $code);
+	$code = str_split(implode($code));
+
+	$c_code = array();
+	array_push($c_code, "char array[30000];");
+	array_push($c_code, "char *ptr=array;");
+	array_push($c_code, "int main() {");
+
+	foreach ($code as $val) {
+		foreach ($c as $i => $v) {
+			if ($val == $i) {
+				array_push($c_code, $v);
+			}
+		}
+	}
+	array_push($c_code, "}");
+	file_put_contents($out, implode(" ", $c_code));
+}
+
+if (!$argv[1]) {
+	die("Error: Need Input File\n");
+} else {
+	if (!$argv[2]) {
+		die("Error: Need Output File\n");
+	} else {
+		bf_run($argv[1], $argv[2]);
+	}
+}
+?>
