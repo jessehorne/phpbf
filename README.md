@@ -9,7 +9,7 @@ Examples of Use
 ---------------
 ```
 phpbf examples/test.bf test.c
-clang test.c -o test
+clang examples/test.c -o test
 ./test
 ```
 
