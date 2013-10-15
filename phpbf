@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-function bf_run($in, $out) {
+function bf_compile($in, $out) {
 	// Create an array holding the appropriate values for each BrainFuck token
 	$c = array(
 	">" => "++ptr;",
@@ -12,7 +12,6 @@ function bf_run($in, $out) {
 	"[" => "while (*ptr) {",
 	"]" => "}"
 	);
-
 	$code = file_get_contents($in); 	// pour contents of $in into $code
 	$code = explode(" ", $code); 		// separate $code into array by spaces
 	$code = str_split(implode($code));	// set $code to the splitted-imploded $code array >:O what!?
@@ -34,17 +33,21 @@ function bf_run($in, $out) {
 		}
 	}
 	array_push($c_code, "}"); // Add the final piece of the puzzle
-	file_put_contents($out, implode(" ", $c_code)); // put the C code into the destination!
+	file_put_contents($out, implode(" ", $c_code)); // put the C code into the destination folder!
 }
-
-// This handles the two command line arguments
+// This handles the command line arguments
 if (!$argv[1]) {
-	die("Error: Need Input File\n");
+	die("Error: Need Option Parameter\n");
 } else {
 	if (!$argv[2]) {
-		die("Error: Need Output File\n");
+		die("Error: Need Input File\n");
 	} else {
-		bf_run($argv[1], $argv[2]);
+		if ($argv[1] == "compile") {
+			if (!$argv[3]) { die("Error: Need Ouput File\n"); }
+			bf_compile($argv[2], $argv[3]);
+		} elseif ($argv[2] == "run") {
+			die("Error: 'run' not currently implemented.\n");
+		}
 	}
 }
 ?>
