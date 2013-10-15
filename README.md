@@ -8,7 +8,7 @@ Note: This version has only been tested with PHP version 5.5.1
 Examples of Use
 ---------------
 ```
-phpbf examples/test.bf test.c
+phpbf compile examples/test.bf test.c
 clang examples/test.c -o test
 ./test
 ```
