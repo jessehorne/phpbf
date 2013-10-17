@@ -23,5 +23,6 @@ Interpreting
 
 What the f*ck is Brainf*ck?
 ---------------------------
-[Wikipedia](http://en.wikipedia.org/wiki/Brainf*ck)
-[Some Other Place I Found On Google](http://www.muppetlabs.com/~breadbox/bf/)
+[Wikipedia Article On Brainf*ck](http://en.wikipedia.org/wiki/Brainf*ck)
+
+[Muppet Labs Resource](http://www.muppetlabs.com/~breadbox/bf/)
