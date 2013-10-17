@@ -3,9 +3,9 @@
 
 function bf_run($in) {
 	// Create an array holding the appropriate values for each BrainFuck token
-	//$tokens = array(">","<","+","-",".",",","[","]");
+	//$tokens = array('>','<','+','-','.',',','[',']');
 	$code = file_get_contents($in); 	// pour contents of $in into $code
-	$code = explode(" ", $code); 		// separate $code into array by spaces
+	$code = explode(' ', $code); 		// separate $code into array by spaces
 	$code = str_split(implode($code));	// set $code to the splitted-imploded $code array >:O what!?
 
 	$loops1 = array();
@@ -17,30 +17,40 @@ function bf_run($in) {
 	while ($i < sizeof($code)) {
 		$i++;
 		//echo "DEBUG: $i - $ptr\n";
-		$a = $code[$i];
-		if ($a == ">") {
-			$ptr++;
-		} elseif ($a == "<") {
-			$ptr--;
-		} elseif ($a == "+") {
-			$memory[$ptr]++;
-		} elseif ($a == "-") {
-			$memory[$ptr]--;
-		} elseif ($a == ".") {
-			echo chr($memory[$ptr]);
-		} elseif ($a == ",") {
-			$input = fgets(STDIN);
-			$memory[$ptr] = ord($input[0]);
-		} elseif ($a == "[") {
-			array_push($loops1, $i);
-		} elseif ($a == "]") {
-			if ($memory[$ptr] != 0) {
-				$i = $loops1[sizeof($loops1)-1];
-				continue;
-			} else {
-				unset($code[$i]);
-				unset($loops1[sizeof($loops1)-1]);
-			}
+		switch ($code[$i]) {
+			case '>':
+				$ptr++;
+				break;
+			case '<':
+				$ptr--;
+				break;
+			case '+':
+				$memory[$ptr]++;
+				break;
+			case '-':
+				$memory[$ptr]--;
+				break;
+			case '.':
+				echo chr($memory[$ptr]);
+				break;
+			case ',':
+				$input = fgets(STDIN);
+				$memory[$ptr] = ord($input[0]);
+				break;
+			case '[':
+				array_push($loops1, $i);
+				break;
+			case ']':
+				if ($memory[$ptr] != 0) {
+					$i = $loops1[sizeof($loops1)-1];
+					continue;
+				} else {
+					unset($code[$i]);
+					unset($loops1[sizeof($loops1)-1]);
+				}
+				break;
+			default:
+				//Ignore non-supported instructions
 		}
 	}
 	echo "\n";
@@ -49,25 +59,25 @@ function bf_run($in) {
 function bf_compile($in, $out) {
 	// Create an array holding the appropriate values for each BrainFuck token
 	$c = array(
-	">" => "++ptr;",
-	"<" => "--ptr;",
-	"+" => "++*ptr;",
-	"-" => "--*ptr;",
-	"." => "putchar(*ptr);",
-	"," => "*ptr=getchar();",
-	"[" => "while (*ptr) {",
-	"]" => "}"
+	'>' => '++ptr;',
+	'<' => '--ptr;',
+	'+' => '++*ptr;',
+	'-' => '--*ptr;',
+	'.' => 'putchar(*ptr);',
+	',' => '*ptr=getchar();',
+	'[' => 'while (*ptr) {',
+	']' => '}'
 	);
 	// WARNING: Below, there is repeated code >:(
 	$code = file_get_contents($in); 	// pour contents of $in into $code
-	$code = explode(" ", $code); 		// separate $code into array by spaces
+	$code = explode(' ', $code); 		// separate $code into array by spaces
 	$code = str_split(implode($code));	// set $code to the splitted-imploded $code array >:O what!?
 
-	$c_code = array();	// Create array to hold compiled C code
+	$c_code = array(); // Create array to hold compiled C code
 	// add some header C code to the $c_code array
-	array_push($c_code, "char array[30000];");
-	array_push($c_code, "char *ptr=array;");
-	array_push($c_code, "int main() {");
+	array_push($c_code, 'char array[30000];');
+	array_push($c_code, 'char *ptr=array;');
+	array_push($c_code, 'int main() {');
 
 	// Basically, this loop goes through $code
 	// and inserts the appropriate C code, for 
@@ -79,20 +89,20 @@ function bf_compile($in, $out) {
 			}
 		}
 	}
-	array_push($c_code, "}"); // Add the final piece of the puzzle
-	file_put_contents($out, implode(" ", $c_code)); // put the C code into the destination folder!
+	array_push($c_code, '}'); // Add the final piece of the puzzle
+	file_put_contents($out, implode(' ', $c_code)); // put the C code into the destination folder!
 }
 // This handles the command line arguments
 if (!$argv[1]) {
-	die("Error: Need Option Parameter\n");
+	die('Error: Need Option Parameter'."\n");
 } else {
 	if (!$argv[2]) {
-		die("Error: Need Input File\n");
+		die('Error: Need Input File'."\n");
 	} else {
-		if ($argv[1] == "compile") {
-			if (!$argv[3]) { die("Error: Need Ouput File\n"); }
+		if ($argv[1] == 'compile') {
+			if (!$argv[3]) { die('Error: Need Ouput File'."\n"); }
 			bf_compile($argv[2], $argv[3]);
-		} elseif ($argv[1] == "run") {
+		} elseif ($argv[1] == 'run') {
 			bf_run($argv[2]);
 		}
 	}
